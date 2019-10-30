@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/mn_hot_videos"
+        android:title="@string/mn_hot_videos"
+        android:icon="@drawable/ic_video_hot"/>
+    <item android:id="@+id/mn_categories"
+        android:title="@string/mn_categories"
+        android:icon="@drawable/ic_category"/>
+    <item android:id="@+id/mn_favorite"
+        android:title="@string/mn_favorite"
+        android:icon="@drawable/ic_favorite_check"
+        />
+</menu>

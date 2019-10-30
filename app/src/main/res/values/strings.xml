@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Hot</string>
+    <string name="mn_hot_videos">Hot Videos</string>
+    <string name="mn_categories">Categories</string>
+    <string name="mn_favorite">Favorites</string>
+    <string name="mn_add_to_favorite">Add to favorites</string>
+    <string name="mn_version">Version</string>
+    <string name="mn_term_condition">Term and Conditions</string>
+    <string name="mn_vote">Votes</string>
+    <string name="mn_mail_us">Mail us</string>
+    <string name="mn_history">History</string>
+    <string name="mn_communicate">Communicate</string>
+    <string name="mn_share">Share</string>
+    <string name="mn_send">Send</string>
+    <string name="mn_language">Language</string>
+    <string name="mn_vietnamese">Vietnamese</string>
+    <string name="mn_english">English</string>
+    <string name="mn_remove">Remove from list</string>
+    <string name="mn_remove_all">Remove All</string>
+    <string name="open">Open Navigation Drawer</string>
+    <string name="close">Close Navigation Drawer</string>
+    <string name="json_thumb">thumb</string>
+    <string name="json_id">id</string>
+    <string name="json_title">title</string>
+    <string name="json_avatar">avatar</string>
+    <string name="json_file_mp4">file_mp4</string>
+    <string name="json_date_published">date_published</string>
+    <string name="json_duration">duration</string>
+    <string name="id_video">idVideo</string>
+    <string name="video_url">videoURL</string>
+    <string name="avatar_url">avatarURL</string>
+    <string name="current_video_position">CurrentVideoPosition</string>
+    <string name="video_list">VideoList</string>
+    <string name="removed_from_list">Removed from list</string>
+    <string name="removed_all">Removed All</string>
+    <string name="error">Error</string>
+    <string name="search_video">Search Video</string>
+    <string name="play_list">Playlist</string>
+    <string name="auto_play">Autoplay  </string>
+
+
+
+</resources>

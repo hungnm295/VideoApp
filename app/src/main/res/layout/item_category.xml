@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        app:cardCornerRadius="@dimen/_10sdp"
+        android:clickable="true"
+        android:elevation="3dp"
+        android:fadeScrollbars="true"
+        android:layout_marginBottom="@dimen/_8sdp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imgCategoryThumb"
+                android:layout_width="@dimen/_160sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:scaleType="fitXY"/>
+            <TextView
+                android:id="@+id/tvCategoryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="#000"
+                android:textStyle="italic"
+                android:layout_gravity="bottom"
+                android:gravity="start"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_2sdp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</layout>

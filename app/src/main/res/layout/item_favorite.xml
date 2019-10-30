@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_4sdp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            app:cardCornerRadius="@dimen/_10sdp"
+            android:clickable="true"
+            android:elevation="@dimen/_100sdp"
+            android:fadeScrollbars="true"
+            app:cardUseCompatPadding="true">
+                <FrameLayout
+                    android:id="@+id/image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgAvatar"
+                        android:layout_width="@dimen/_140sdp"
+                        android:layout_height="@dimen/_80sdp"
+                        android:scaleType="fitXY"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_launcher" />
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_play_img" />
+                    <TextView
+                        android:id="@+id/tvDuration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2:26"
+                        android:textSize="@dimen/_10sdp"
+                        android:textColor="@color/white"
+                        android:layout_gravity="bottom|right"
+                        android:paddingLeft="@dimen/_3sdp"
+                        android:paddingRight="@dimen/_3sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:background="@drawable/tv_duration_background"/>
+                </FrameLayout>
+        </androidx.cardview.widget.CardView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/card_view_favorite"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp">
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:text="The lord of rings"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/tvDatePublish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvTitle"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:text="17/10/2019"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="@color/tv_date_publish"/>
+            <ImageButton
+                android:id="@+id/imgButtonMore"
+                android:src="@drawable/ic_more_menu"
+                android:background="@android:color/transparent"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</layout>

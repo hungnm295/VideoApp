@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/mn_version"
+            android:icon="@drawable/ic_version"
+            android:title="@string/mn_version" />
+        <item
+            android:id="@+id/mn_term_condition"
+            android:icon="@drawable/ic_term"
+            android:title="@string/mn_term_condition" />
+        <item
+            android:id="@+id/mn_vote"
+            android:icon="@drawable/ic_vote"
+            android:title="@string/mn_vote" />
+        <item
+            android:id="@+id/mn_mail_us"
+            android:icon="@drawable/ic_mail"
+            android:title="@string/mn_mail_us" />
+        <item
+            android:id="@+id/mn_history"
+            android:icon="@drawable/ic_history"
+            android:title="@string/mn_history" />
+
+    </group>
+    <item android:title="@string/mn_language"
+        android:icon="@drawable/ic_language">
+       <!-- android:icon="@drawable/ic_language">
+        <menu>
+            <item android:id="@+id/vietnamese"
+            android:title="@string/mn_vietnamese"
+            android:icon="@drawable/ic_vietnam"/>
+            <item android:id="@+id/english"
+                android:title="@string/mn_english"
+                android:icon="@drawable/ic_english"/>
+        </menu>
+-->
+    </item>
+
+    <item android:title="@string/mn_communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share"
+                android:title="@string/mn_share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_send"
+                android:title="@string/mn_send" />
+        </menu>
+    </item>
+
+</menu>
