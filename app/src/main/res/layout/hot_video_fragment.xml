@@ -4,7 +4,8 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/video_list_background">
         <FrameLayout
             android:id="@+id/slide_show"
             android:layout_width="match_parent"
@@ -12,8 +13,7 @@
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/image_view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_170sdp"
-                android:layout_marginBottom="@dimen/_5sdp"/>
+                android:layout_height="@dimen/_170sdp"/>
             <me.relex.circleindicator.CircleIndicator
                 android:id="@+id/circle_indicator"
                 android:layout_width="wrap_content"
@@ -25,7 +25,8 @@
             android:id="@+id/rvVideoList"
             android:layout_below="@id/slide_show"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_5sdp"/>
         <ProgressBar
             android:id="@+id/pbLoadVideo"
             android:layout_centerInParent="true"

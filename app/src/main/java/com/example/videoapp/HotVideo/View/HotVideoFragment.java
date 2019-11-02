@@ -28,7 +28,9 @@ import com.example.videoapp.VideoView.VideoViewActivity;
 import com.example.videoapp.databinding.HotVideoFragmentBinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class HotVideoFragment extends Fragment implements IVideo.View {
     HotVideoFragmentBinding binding;
@@ -36,6 +38,7 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
     ArrayList<Video> videoList;
     VideoAdapter videoAdapter;
     AdvertisementAdapter adAdapter;
+    List<String> imageList;
     int currentPage =0;
 
     public static HotVideoFragment newInstance() {
@@ -74,7 +77,7 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
     @Override
     public void showContent(ArrayList<Video> videoList) {
         this.videoList = videoList;
-        initSlideShow(videoList);
+        initSlideShow();
         initRecyclerView(videoList);
     }
 
@@ -86,6 +89,7 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
     private void initRecyclerView(final ArrayList<Video> videoList) {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1, RecyclerView.VERTICAL, false);
         binding.rvVideoList.setLayoutManager(gridLayoutManager);
+        Collections.shuffle(videoList);
         videoAdapter = new VideoAdapter(videoList, getContext());
         binding.rvVideoList.setAdapter(videoAdapter);
         videoAdapter.setOnClick(new IVideo.OnClick() {
@@ -116,8 +120,10 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
         });
     }
 
-    private void initSlideShow(final ArrayList<Video> videoList) {
-        adAdapter = new AdvertisementAdapter(getContext(), videoList);
+    private void initSlideShow() {
+
+        imageList = Arrays.asList(getResources().getStringArray(R.array.image_slideshow));
+        adAdapter = new AdvertisementAdapter(getContext(), imageList);
         binding.imageViewPager.setAdapter(adAdapter);
         binding.circleIndicator.setViewPager(binding.imageViewPager);
 
@@ -135,8 +141,8 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
             @Override
             public void run() {
                 handler.postDelayed(this, Constant.TIME_PERIOD_SLIDESHOW);
-                if (currentPage == videoList.size() - 1) {
-                    currentPage = 0;
+                if (currentPage == imageList.size() - 1) {
+                    currentPage = -1;
                 }
                 currentPage++;
                 binding.imageViewPager.setCurrentItem(currentPage);

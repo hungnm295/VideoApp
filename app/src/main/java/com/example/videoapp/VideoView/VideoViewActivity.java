@@ -1,5 +1,7 @@
 package com.example.videoapp.VideoView;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -10,14 +12,18 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupMenu;
 import android.widget.SeekBar;
@@ -35,28 +41,54 @@ import com.example.videoapp.HotVideo.View.Adapter.VideoAdapter;
 import com.example.videoapp.R;
 import com.example.videoapp.SQL.SQLiteVideo;
 import com.example.videoapp.databinding.ActivityVideoViewBinding;
+import com.example.videoapp.databinding.DialogBrightnessBinding;
+import com.example.videoapp.databinding.DialogProgressBinding;
+import com.example.videoapp.databinding.DialogVolumeBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import static com.example.videoapp.SQL.App.getContext;
+
 public class VideoViewActivity extends AppCompatActivity {
+    private static final String TAG = "VideoViewActivity";
     ActivityVideoViewBinding binding;
-    int currentVideoPosition;
+    DialogVolumeBinding volumeBinding;
+    DialogBrightnessBinding brightnessBinding;
+    DialogProgressBinding progressBinding;
     SQLiteVideo sqLiteVideo;
+    int currentVideoPosition;
     VideoAdapter videoAdapter;
     ArrayList<Video> videoList;
     GestureDetector gestureDetector;
     AudioManager audioManager;
     boolean isFullScreen = false;
-    int currentVolume;
+
     private int screenWidth, screenHeight;
     private Display display;
     private Point size;
 
+    Dialog volumeDialog, brightnessDialog, progressDialog;
+
+    protected float mDownX;
+    protected float mDownY;
+    protected boolean isChangeVolume;
+    protected boolean isChangePosition;
+    protected boolean isChangeBrightness;
+    protected boolean changePosition;
+    protected long seekTimePosition;
+    protected long actionDownPosition;
+    protected int actionDownVolume;
+    protected float actionDownBrightness;
+    long videoDuration;
+    long currentVideoProgress;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_video_view);
+
         Intent intent = getIntent();
         videoList = new ArrayList<>();
         currentVideoPosition = intent.getIntExtra(getResources().getString(R.string.current_video_position), 0);
@@ -65,15 +97,210 @@ public class VideoViewActivity extends AppCompatActivity {
         playVideo(videoList.get(currentVideoPosition).getFile_mp4());
 
         gestureDetector = new GestureDetector(this, new MyGesture());
+
+
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        screenHeight = getResources().getDisplayMetrics().heightPixels;
+        audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+
+
+
         binding.videoView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
+                float x = event.getX();
+                float y = event.getY();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.i(TAG, "onTouch surfaceContainer actionDown [" + this.hashCode() + "] ");
+                        //mTouchingProgressBar = true;
+
+                        mDownX = x;
+                        mDownY = y;
+                        isChangeVolume = false;
+                        isChangePosition = false;
+                        isChangeBrightness = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        Log.i(TAG, "onTouch surfaceContainer actionMove [" + this.hashCode() + "] ");
+                        float deltaX = x - mDownX;
+                        float deltaY = y - mDownY;
+                        float absDeltaX = Math.abs(deltaX);
+                        float absDeltaY = Math.abs(deltaY);
+                        if (isFullScreen) {
+                            if (!isChangePosition && !isChangeVolume && !isChangeBrightness) {
+                                if (absDeltaX > Constant.THRESHOLD || absDeltaY > Constant.THRESHOLD) {
+                                    //cancelProgressTimer();
+                                    if (absDeltaX >= Constant.THRESHOLD) {
+                                        isChangePosition = true;
+                                    } else {
+                                        if (mDownX < screenHeight * 0.5f) {
+                                            isChangeBrightness = true;
+
+                                            WindowManager.LayoutParams lp = getWindow().getAttributes();
+                                            if (lp.screenBrightness < 0) {
+                                                try {
+                                                    actionDownBrightness = Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+                                                    Log.i(TAG, "current system brightness: " + actionDownBrightness);
+                                                } catch (Settings.SettingNotFoundException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {
+                                                actionDownBrightness = lp.screenBrightness * 255;
+                                                Log.i(TAG, "current activity brightness: " + actionDownBrightness);
+                                            }
+                                        } else {
+                                            isChangeVolume = true;
+                                            actionDownVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (isChangePosition) {
+                            seekTimePosition = (int) (currentVideoProgress + deltaX * videoDuration / screenWidth);
+                            if(seekTimePosition<0){
+                                seekTimePosition=0;
+                            }else if (seekTimePosition>videoDuration){
+                                seekTimePosition = videoDuration;
+                            }
+                            showProgressDialog(deltaX, seekTimePosition, videoDuration);
+                        }
+                        if (isChangeVolume) {
+                            deltaY = -deltaY;
+                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                            int deltaV = (int) (maxVolume * deltaY * 3 / screenWidth);
+                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, actionDownVolume + deltaV, 0);
+                            int volumePercent = (int) (actionDownVolume * 100 / maxVolume + deltaY * 3 * 100 / screenWidth);
+                            showVolumeDialog(volumePercent);
+                        }
+
+                        if (isChangeBrightness) {
+                            deltaY = -deltaY;
+                            int deltaV = (int) (255 * deltaY * 3 / screenHeight);
+                            WindowManager.LayoutParams params = getWindow().getAttributes();
+                            if (((actionDownBrightness + deltaV) / 255) >= 1) {
+                                params.screenBrightness = 1;
+                            } else if (((actionDownBrightness + deltaV) / 255) <= 0) {
+                                params.screenBrightness = 0.01f;
+                            } else {
+                                params.screenBrightness = (actionDownBrightness + deltaV) / 255;
+                            }
+                            getWindow().setAttributes(params);
+                            int brightnessPercent = (int) (actionDownBrightness * 100 / 255 + deltaY * 3 * 100 / screenHeight);
+                            showBrightnessDialog(brightnessPercent);
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        dismissDialog(volumeDialog);
+                        dismissDialog(brightnessDialog);
+                        dismissDialog(progressDialog);
+                        if (isChangePosition) {
+                            binding.videoView.seekTo((int) seekTimePosition);
+                            binding.videoView.start();
+                            int progress = (int) (seekTimePosition * 100 / (videoDuration == 0 ? 1 : videoDuration));
+                            binding.sbTime.setProgress(progress);
+                        }
+                        break;
+                }
                 return true;
             }
         });
 
+    }
 
+
+
+    public void showVolumeDialog(int volumePercent) {
+
+        if (volumeDialog == null) {
+            volumeDialog = new Dialog(VideoViewActivity.this);
+            volumeBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_volume, null, false);
+            volumeDialog.setContentView(volumeBinding.getRoot());
+        }
+        if (!volumeDialog.isShowing()) {
+            volumeDialog.show();
+            binding.controller.setVisibility(View.GONE);
+        }
+
+        if (volumePercent > 100) {
+            volumePercent = 100;
+        } else if (volumePercent < 0) {
+            volumePercent = 0;
+        }
+
+        if (volumePercent == 0) {
+            volumeBinding.imgVolume.setImageResource(R.drawable.ic_volume_off);
+        } else {
+            volumeBinding.imgVolume.setImageResource(R.drawable.ic_volume_up);
+        }
+
+        volumeBinding.tvVolume.setText(volumePercent + "%");
+        volumeBinding.pbVolume.setProgress(volumePercent);
+    }
+
+    public void showBrightnessDialog(int brightnessPercent) {
+        if (brightnessDialog == null) {
+            brightnessDialog = new Dialog(VideoViewActivity.this);
+            brightnessBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_brightness, null, false);
+            brightnessDialog.setContentView(brightnessBinding.getRoot());
+        }
+        if (!brightnessDialog.isShowing()) {
+            brightnessDialog.show();
+            binding.controller.setVisibility(View.GONE);
+        }
+
+        if (brightnessPercent > 100) {
+            brightnessPercent = 100;
+        } else if (brightnessPercent < 0) {
+            brightnessPercent = 0;
+        }
+
+        if (brightnessPercent == 0) {
+            brightnessBinding.imgBrightness.setImageResource(R.drawable.ic_brightness_low);
+        } else if(brightnessPercent>0 && brightnessPercent<60){
+            brightnessBinding.imgBrightness.setImageResource(R.drawable.ic_brightness_medium);
+        } else{
+            brightnessBinding.imgBrightness.setImageResource(R.drawable.ic_brightness_high);
+        }
+
+        brightnessBinding.tvBrightness.setText(brightnessPercent + "%");
+        brightnessBinding.pbBrightness.setProgress(brightnessPercent);
+
+    }
+
+    public void showProgressDialog(float deltaX, long seekTimePosition, long videoDuration) {
+        if (progressDialog == null) {
+            progressDialog = new Dialog(VideoViewActivity.this);
+            progressBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_progress, null, false);
+            progressDialog.setContentView(progressBinding.getRoot());
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+            binding.controller.setVisibility(View.GONE);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
+        String seekTime = sdf.format(seekTimePosition);
+        String totalTime = sdf.format(videoDuration);
+
+        progressBinding.tvCurrentTime.setText(seekTime + " / ");
+        progressBinding.tvDuration.setText(totalTime);
+        progressBinding.pbDuration.setProgress(videoDuration <= 0 ? 0 : (int) (seekTimePosition * 100 / videoDuration));
+        if (deltaX > 0) {
+            progressBinding.imgAction.setBackgroundResource(R.drawable.ic_forward);
+        } else {
+            progressBinding.imgAction.setBackgroundResource(R.drawable.ic_rewind);
+        }
+        binding.videoView.pause();
+
+    }
+
+    public void dismissDialog(Dialog dialog) {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 
     private void displayVideoList() {
@@ -124,6 +351,7 @@ public class VideoViewActivity extends AppCompatActivity {
         onClickPlayPause();
         onClickNext();
         onClickPrevious();
+        onVideoCompletion();
         setFullScreen();
         onSeekBarChangeListener();
     }
@@ -270,9 +498,11 @@ public class VideoViewActivity extends AppCompatActivity {
                 binding.sbTime.setVisibility(View.GONE);
             }
         };
+
         binding.controller.setVisibility(View.VISIBLE);
         binding.sbTime.setVisibility(View.VISIBLE);
-        handler.postDelayed(runnable, 4000);
+
+        handler.postDelayed(runnable, 3000);
         //handler.removeCallbacks(runnable);
     }
 
@@ -287,12 +517,12 @@ public class VideoViewActivity extends AppCompatActivity {
 
     private void setVideoDuration(String videoURL) {
         //Get video duration from URL by using MediaPlayer
-        long milliSecond = MediaPlayer.create(getBaseContext(), Uri.parse(videoURL)).getDuration();
+        videoDuration = MediaPlayer.create(getBaseContext(), Uri.parse(videoURL)).getDuration(); //in millisecond
         SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-        binding.tvDuration.setText(sdf.format(milliSecond));
+        binding.tvDuration.setText(sdf.format(videoDuration));
 
         //Set max for Seek Bar
-        binding.sbTime.setMax((int) milliSecond);
+        binding.sbTime.setMax((int) videoDuration);
     }
 
     private void setCurrentTime() {
@@ -304,34 +534,38 @@ public class VideoViewActivity extends AppCompatActivity {
             public void run() {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
-                binding.tvCurrentTime.setText(sdf.format(binding.videoView.getCurrentPosition()));
+                currentVideoProgress = binding.videoView.getCurrentPosition();
+                binding.tvCurrentTime.setText(sdf.format(currentVideoProgress));
                 binding.sbTime.setProgress(binding.videoView.getCurrentPosition());
                 handler.postDelayed(this, 100);
-                binding.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        if (binding.swAutoPlay.isChecked()) {
-                            currentVideoPosition++;
-                            if (currentVideoPosition > videoList.size() - 1) {
-                                currentVideoPosition = 0;
-                            }
-                            playVideo(videoList.get(currentVideoPosition).getFile_mp4());
-                        } else {
-                            binding.videoView.stopPlayback();
-                            binding.iBtnReplay.setVisibility(View.VISIBLE);
-                            binding.iBtnReplay.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    playVideo(videoList.get(currentVideoPosition).getFile_mp4());
-                                    binding.iBtnReplay.setVisibility(View.INVISIBLE);
-                                }
-                            });
-                        }
-                    }
-                });
 
             }
         }, 100);
+    }
+
+    public void onVideoCompletion(){
+        binding.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (binding.swAutoPlay.isChecked()) {
+                    currentVideoPosition++;
+                    if (currentVideoPosition > videoList.size() - 1) {
+                        currentVideoPosition = 0;
+                    }
+                    playVideo(videoList.get(currentVideoPosition).getFile_mp4());
+                } else {
+                    binding.videoView.stopPlayback();
+                    binding.iBtnReplay.setVisibility(View.VISIBLE);
+                    binding.iBtnReplay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            playVideo(videoList.get(currentVideoPosition).getFile_mp4());
+                            binding.iBtnReplay.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void getScreenSize() {
@@ -342,125 +576,20 @@ public class VideoViewActivity extends AppCompatActivity {
         screenHeight = size.y;
     }
 
+
     private class MyGesture extends GestureDetector.SimpleOnGestureListener {
 
         //Press to show controller
         @Override
         public void onShowPress(MotionEvent e) {
-            showHideVideoController();
+
             super.onShowPress(e);
         }
 
-        //Double tap to forward or rewind
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-
-            if (e.getX() > screenWidth / 2) {
-                binding.videoView.seekTo(binding.videoView.getCurrentPosition() + Constant.TIME_FORWARD);
-                final Handler handler = new Handler();
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.imgForward10s.setVisibility(View.GONE);
-                        binding.sbTime.setVisibility(View.GONE);
-                    }
-                };
-                binding.imgForward10s.setVisibility(View.VISIBLE);
-                binding.imgRewind10s.setVisibility(View.INVISIBLE);
-                binding.sbTime.setVisibility(View.VISIBLE);
-                handler.postDelayed(runnable, 1000);
-            } else {
-                binding.videoView.seekTo(binding.videoView.getCurrentPosition() - Constant.TIME_REWIND);
-                final Handler handler = new Handler();
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        binding.imgRewind10s.setVisibility(View.GONE);
-                        binding.sbTime.setVisibility(View.GONE);
-                    }
-                };
-                binding.imgRewind10s.setVisibility(View.VISIBLE);
-                binding.imgForward10s.setVisibility(View.INVISIBLE);
-                binding.sbTime.setVisibility(View.VISIBLE);
-                handler.postDelayed(runnable, 1000);
-            }
-            return super.onDoubleTap(e);
-        }
-
-        //Swipe up down in adjust volume
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-
-            // Get swipe delta value in x axis.
-            float deltaX = e1.getX() - e2.getX();
-
-            // Get swipe delta value in y axis.
-            float deltaY = e1.getY() - e2.getY();
-
-            // Get absolute value.
-            float deltaXAbs = Math.abs(deltaX);
-            float deltaYAbs = Math.abs(deltaY);
-
-            // Only when swipe distance between minimal and maximal distance value then we treat it as effective swipe
-           /* if(deltaXAbs >= 100)
-            {
-                if(deltaX > 0 && deltaYAbs<50)
-                {
-                    binding.videoView.seekTo(binding.videoView.getCurrentPosition() - Constant.TIME_REWIND);
-                    final Handler handler = new Handler();
-                    final Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.imgRewind10s.setVisibility(View.GONE);
-                            binding.sbTime.setVisibility(View.GONE);
-                        }
-                    };
-                    binding.imgRewind10s.setVisibility(View.VISIBLE);
-                    binding.imgForward10s.setVisibility(View.INVISIBLE);
-                    binding.sbTime.setVisibility(View.VISIBLE);
-                    handler.postDelayed(runnable, 1000);
-                }else
-                {
-                    binding.videoView.seekTo(binding.videoView.getCurrentPosition() + Constant.TIME_FORWARD);
-                    final Handler handler = new Handler();
-                    final Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.imgForward10s.setVisibility(View.GONE);
-                            binding.sbTime.setVisibility(View.GONE);
-                        }
-                    };
-                    binding.imgForward10s.setVisibility(View.VISIBLE);
-                    binding.imgRewind10s.setVisibility(View.INVISIBLE);
-                    binding.sbTime .setVisibility(View.VISIBLE);
-                    handler.postDelayed(runnable, 1000);
-                }
-            }*/
-
-            if ((deltaYAbs >= 100)) {
-                if (deltaY > 0) {
-                    audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                    currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    currentVolume++;
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_SHOW_UI);
-                    //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-                } else {
-
-                    audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                    currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    currentVolume--;
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_SHOW_UI);
-                    //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
-                }
-
-            }
-            return true;
+        public boolean onSingleTapUp(MotionEvent e) {
+            showHideVideoController();
+            return super.onSingleTapUp(e);
         }
     }
 
@@ -486,23 +615,22 @@ public class VideoViewActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-            case KeyEvent.KEYCODE_VOLUME_UP:
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-            default:
-                return super.onKeyDown(keyCode, event);
-        }
-
+    protected void onPause() {
+        super.onPause();
+        binding.videoView.pause();
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-
-        return super.onKeyUp(keyCode, event);
+    public Dialog createDialog(View view) {
+        Dialog dialog = new Dialog(VideoViewActivity.this);
+        dialog.setContentView(view);
+        Window window = dialog.getWindow();
+        window.addFlags(Window.FEATURE_ACTION_BAR);
+        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        window.setLayout(-2, -2);
+        WindowManager.LayoutParams localLayoutParams = window.getAttributes();
+        localLayoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(localLayoutParams);
+        return dialog;
     }
-
-
 }

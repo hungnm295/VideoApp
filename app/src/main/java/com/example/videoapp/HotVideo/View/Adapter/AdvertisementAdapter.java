@@ -20,16 +20,16 @@ import java.util.List;
 
 public class AdvertisementAdapter extends PagerAdapter {
     Context context;
-    ArrayList<Video> videoList;
+    List<String> imageList;
 
-    public AdvertisementAdapter(Context context, ArrayList<Video> videoList) {
+    public AdvertisementAdapter(Context context, List<String> imageList) {
         this.context = context;
-        this.videoList = videoList;
+        this.imageList = imageList;
     }
 
     @Override
     public int getCount() {
-        return videoList.size();
+        return imageList.size();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AdvertisementAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        Glide.with(context).load(videoList.get(position).getAvatar())
+        Glide.with(context).load(imageList.get(position))
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageView);
         container.addView(imageView, 0);

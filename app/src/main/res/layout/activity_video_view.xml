@@ -4,17 +4,24 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".VideoView.VideoViewActivity">
+        tools:context=".VideoView.VideoViewActivity"
+        android:background="@drawable/video_list_background">
         <FrameLayout
             android:id="@+id/video_view_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_170sdp"
             android:layout_alignParentTop="true">
-                <VideoView
-                    android:id="@+id/videoView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"/>
+            <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/tvVolume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#fff"/>
                 <ImageButton
                     android:id="@+id/iBtnReplay"
                     android:src="@drawable/ic_replay"
@@ -123,7 +130,6 @@
                     android:layout_gravity="center">
                     <ImageView
                         android:id="@+id/imgForward10s"
-                        android:src="@drawable/ic_forward_10s"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -131,7 +137,6 @@
                         android:visibility="gone"/>
                     <ImageView
                         android:id="@+id/imgRewind10s"
-                        android:src="@drawable/ic_rewind_10s"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -143,6 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/_3sdp"
                 android:progressBackgroundTint="@color/white"
                 android:visibility="gone"/>
             </FrameLayout>
@@ -156,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/play_list"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/_13sdp"
                 android:textColor="@color/black"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/_10sdp"/>
@@ -169,7 +175,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/_10sdp"
                 android:text="@string/auto_play"
-                android:textSize="@dimen/_12sdp"/>
+                android:textSize="@dimen/_13sdp"/>
         </RelativeLayout>
         <FrameLayout
             android:layout_below="@id/auto_play"

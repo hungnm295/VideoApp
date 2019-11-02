@@ -1,4 +1,12 @@
 <resources>
+    <string-array name="image_slideshow">
+        <item>http://kenh14cdn.com/crop/640_360/2019/10/9/landscape-avatar-copy-6-1570614937635744009919-crop-15706149434091020368811.png</item>
+        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/abominable-animated-movie-15706828763581316248349.jpg</item>
+        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/gemini-man-poster-15706797402101057862233.jpg</item>
+        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/l0-15706833853682137973483.jpg</item>
+        <item>https://t.a4vn.com/2018/10/1/ra-rap-xem-gi-thang-10-venom-va-a-star-is-born-xuat-quan-hai-phi-911.jpg</item>
+
+    </string-array>
     <string name="app_name">Hot</string>
     <string name="mn_hot_videos">Hot Videos</string>
     <string name="mn_categories">Categories</string>
