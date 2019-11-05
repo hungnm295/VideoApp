@@ -15,12 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.videoapp.Categories.Presenter.CategoryPresenter;
 import com.example.videoapp.Constant;
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 import com.example.videoapp.HotVideo.Presenter.CategoryVideoPresenter;
 import com.example.videoapp.HotVideo.Presenter.IVideo;
 import com.example.videoapp.HotVideo.View.Adapter.VideoAdapter;
+import com.example.videoapp.MainActivity;
 import com.example.videoapp.R;
 import com.example.videoapp.VideoView.VideoViewActivity;
 import com.example.videoapp.databinding.HotVideoFragmentBinding;
@@ -32,6 +32,7 @@ public class ItemCategoryFragment extends Fragment implements IVideo.View {
     CategoryVideoPresenter presenter;
     VideoAdapter adapter;
     ArrayList<Video> videoList;
+    boolean isNetworkConnected;
 
     public static ItemCategoryFragment newInstance() {
         Bundle args = new Bundle();
@@ -45,18 +46,15 @@ public class ItemCategoryFragment extends Fragment implements IVideo.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.hot_video_fragment, container, false);
         initPresenter();
+        isNetworkConnected = ((MainActivity)getActivity()).isNetworkConnected();
         presenter.fetchDataFromSever(Constant.ITEM_CATEGORY_API);
         return binding.getRoot();
     }
 
     @Override
-    public void showProgressBar() {
-        binding.pbLoadVideo.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgressBar() {
-        binding.pbLoadVideo.setVisibility(View.INVISIBLE);
+    public void showProgressBar(boolean isLoading) {
+        if (isLoading) binding.pbLoadVideo.setVisibility(View.VISIBLE);
+        else binding.pbLoadVideo.setVisibility(View.INVISIBLE);
     }
 
     @Override

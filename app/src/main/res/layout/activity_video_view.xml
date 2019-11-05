@@ -49,6 +49,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="@dimen/_20sdp"
                             android:layout_marginTop="@dimen/_10sdp"
+                            android:tag="uncheck"
                             android:background="@android:color/transparent"/>
                     </RelativeLayout>
 
@@ -149,6 +150,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="@dimen/_3sdp"
+                android:thumbTint="@color/orange"
+                android:progressTint="@color/orange"
                 android:progressBackgroundTint="@color/white"
                 android:visibility="gone"/>
             </FrameLayout>
@@ -174,6 +177,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/_10sdp"
+                android:thumbTint="@color/orange"
+                style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
                 android:text="@string/auto_play"
                 android:textSize="@dimen/_13sdp"/>
         </RelativeLayout>

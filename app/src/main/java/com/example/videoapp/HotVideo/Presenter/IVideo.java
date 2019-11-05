@@ -2,10 +2,9 @@ package com.example.videoapp.HotVideo.Presenter;
 
 import android.content.Context;
 
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface IVideo {
     interface OnClick {
@@ -14,8 +13,7 @@ public interface IVideo {
     }
 
     interface View {
-        void showProgressBar();
-        void hideProgressBar();
+        void showProgressBar(boolean isLoading);
         void showContent(ArrayList<Video> videoList);
     }
 

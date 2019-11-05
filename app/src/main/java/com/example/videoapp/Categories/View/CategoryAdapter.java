@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.videoapp.Categories.Model.Category;
+import com.example.videoapp.model.Category;
 import com.example.videoapp.Categories.Presenter.ICategory;
 import com.example.videoapp.R;
 import com.example.videoapp.databinding.ItemCategoryBinding;

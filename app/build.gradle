@@ -31,7 +31,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.android.support:design:29.0.0'
 
-    //Stetho
+    //Stetho - database
     implementation 'com.facebook.stetho:stetho:1.5.1'
 
     //Multi-screen
@@ -48,8 +48,12 @@ dependencies {
     //Circle indicator for slide show ViewPager
     implementation 'me.relex:circleindicator:1.3.2'
 
+    //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation("com.squareup.okhttp3:logging-interceptor:4.2.1")
+
+    //Check network
+    implementation 'com.github.pwittchen:reactivenetwork:0.12.4'
 
 }

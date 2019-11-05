@@ -1,7 +1,6 @@
 package com.example.videoapp.HotVideo.View.Adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,10 +10,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.videoapp.HotVideo.Model.Video;
-import com.example.videoapp.databinding.SlideShowBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

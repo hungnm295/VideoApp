@@ -1,6 +1,6 @@
 package com.example.videoapp.Categories.Presenter;
 
-import com.example.videoapp.Categories.Model.Category;
+import com.example.videoapp.model.Category;
 
 import java.util.List;
 
@@ -9,9 +9,8 @@ public interface ICategory {
     void onClickCategory(int position);
 
     interface View {
-        void showProgressBar();
+        void showProgressBar(boolean isLoading);
 
-        void hideProgressBar();
 
         void showCategory(List<Category> categoryList);
     }

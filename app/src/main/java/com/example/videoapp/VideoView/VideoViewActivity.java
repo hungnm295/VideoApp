@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -35,11 +34,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.videoapp.Constant;
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 import com.example.videoapp.HotVideo.Presenter.IVideo;
 import com.example.videoapp.HotVideo.View.Adapter.VideoAdapter;
 import com.example.videoapp.R;
-import com.example.videoapp.SQL.SQLiteVideo;
+import com.example.videoapp.model.sql.SQLiteVideo;
 import com.example.videoapp.databinding.ActivityVideoViewBinding;
 import com.example.videoapp.databinding.DialogBrightnessBinding;
 import com.example.videoapp.databinding.DialogProgressBinding;
@@ -48,7 +47,7 @@ import com.example.videoapp.databinding.DialogVolumeBinding;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import static com.example.videoapp.SQL.App.getContext;
+import static com.example.videoapp.model.sql.App.getContext;
 
 public class VideoViewActivity extends AppCompatActivity {
     private static final String TAG = "VideoViewActivity";
@@ -60,28 +59,27 @@ public class VideoViewActivity extends AppCompatActivity {
     int currentVideoPosition;
     VideoAdapter videoAdapter;
     ArrayList<Video> videoList;
+
     GestureDetector gestureDetector;
     AudioManager audioManager;
-    boolean isFullScreen = false;
 
+    boolean isFullScreen = false;
     private int screenWidth, screenHeight;
     private Display display;
     private Point size;
 
     Dialog volumeDialog, brightnessDialog, progressDialog;
-
-    protected float mDownX;
-    protected float mDownY;
-    protected boolean isChangeVolume;
-    protected boolean isChangePosition;
-    protected boolean isChangeBrightness;
-    protected boolean changePosition;
-    protected long seekTimePosition;
-    protected long actionDownPosition;
-    protected int actionDownVolume;
-    protected float actionDownBrightness;
+    private float mDownX;
+    private float mDownY;
+    private boolean isChangeVolume;
+    private boolean isChangePosition;
+    private boolean isChangeBrightness;
+    private long seekTimePosition;
+    private int actionDownVolume;
+    private float actionDownBrightness;
     long videoDuration;
     long currentVideoProgress;
+    long beforeStopProgress;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -94,17 +92,12 @@ public class VideoViewActivity extends AppCompatActivity {
         currentVideoPosition = intent.getIntExtra(getResources().getString(R.string.current_video_position), 0);
         videoList = (ArrayList<Video>) intent.getSerializableExtra(getResources().getString(R.string.video_list));
         displayVideoList();
-        playVideo(videoList.get(currentVideoPosition).getFile_mp4());
-
-        gestureDetector = new GestureDetector(this, new MyGesture());
-
+        playVideo(videoList.get(currentVideoPosition));
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         screenHeight = getResources().getDisplayMetrics().heightPixels;
         audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-
-
-
+        gestureDetector = new GestureDetector(this, new MyGesture());
         binding.videoView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -113,17 +106,13 @@ public class VideoViewActivity extends AppCompatActivity {
                 float y = event.getY();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.i(TAG, "onTouch surfaceContainer actionDown [" + this.hashCode() + "] ");
-                        //mTouchingProgressBar = true;
-
-                        mDownX = x;
-                        mDownY = y;
                         isChangeVolume = false;
                         isChangePosition = false;
                         isChangeBrightness = false;
+                        mDownX = x;
+                        mDownY = y;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        Log.i(TAG, "onTouch surfaceContainer actionMove [" + this.hashCode() + "] ");
                         float deltaX = x - mDownX;
                         float deltaY = y - mDownY;
                         float absDeltaX = Math.abs(deltaX);
@@ -131,24 +120,20 @@ public class VideoViewActivity extends AppCompatActivity {
                         if (isFullScreen) {
                             if (!isChangePosition && !isChangeVolume && !isChangeBrightness) {
                                 if (absDeltaX > Constant.THRESHOLD || absDeltaY > Constant.THRESHOLD) {
-                                    //cancelProgressTimer();
                                     if (absDeltaX >= Constant.THRESHOLD) {
                                         isChangePosition = true;
                                     } else {
                                         if (mDownX < screenHeight * 0.5f) {
                                             isChangeBrightness = true;
-
                                             WindowManager.LayoutParams lp = getWindow().getAttributes();
                                             if (lp.screenBrightness < 0) {
                                                 try {
                                                     actionDownBrightness = Settings.System.getInt(getContext().getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
-                                                    Log.i(TAG, "current system brightness: " + actionDownBrightness);
                                                 } catch (Settings.SettingNotFoundException e) {
                                                     e.printStackTrace();
                                                 }
                                             } else {
                                                 actionDownBrightness = lp.screenBrightness * 255;
-                                                Log.i(TAG, "current activity brightness: " + actionDownBrightness);
                                             }
                                         } else {
                                             isChangeVolume = true;
@@ -159,10 +144,11 @@ public class VideoViewActivity extends AppCompatActivity {
                             }
                         }
                         if (isChangePosition) {
-                            seekTimePosition = (int) (currentVideoProgress + deltaX * videoDuration / screenWidth);
-                            if(seekTimePosition<0){
-                                seekTimePosition=0;
-                            }else if (seekTimePosition>videoDuration){
+                            seekTimePosition = (int) (currentVideoProgress + deltaX / screenWidth * videoDuration
+                            );
+                            if (seekTimePosition < 0) {
+                                seekTimePosition = 0;
+                            } else if (seekTimePosition > videoDuration) {
                                 seekTimePosition = videoDuration;
                             }
                             showProgressDialog(deltaX, seekTimePosition, videoDuration);
@@ -172,9 +158,10 @@ public class VideoViewActivity extends AppCompatActivity {
                             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
                             int deltaV = (int) (maxVolume * deltaY * 3 / screenWidth);
                             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, actionDownVolume + deltaV, 0);
-                            int volumePercent = (int) (actionDownVolume * 100 / maxVolume + deltaY * 3 * 100 / screenWidth);
+                            int volumePercent = (int) (actionDownVolume / maxVolume * 100 + deltaY * 3 / screenWidth * 100);
                             showVolumeDialog(volumePercent);
                         }
+
 
                         if (isChangeBrightness) {
                             deltaY = -deltaY;
@@ -188,7 +175,7 @@ public class VideoViewActivity extends AppCompatActivity {
                                 params.screenBrightness = (actionDownBrightness + deltaV) / 255;
                             }
                             getWindow().setAttributes(params);
-                            int brightnessPercent = (int) (actionDownBrightness * 100 / 255 + deltaY * 3 * 100 / screenHeight);
+                            int brightnessPercent = (int) (actionDownBrightness / 255 * 100 + deltaY * 3 / screenHeight * 100);
                             showBrightnessDialog(brightnessPercent);
                         }
                         break;
@@ -209,8 +196,6 @@ public class VideoViewActivity extends AppCompatActivity {
         });
 
     }
-
-
 
     public void showVolumeDialog(int volumePercent) {
 
@@ -259,9 +244,9 @@ public class VideoViewActivity extends AppCompatActivity {
 
         if (brightnessPercent == 0) {
             brightnessBinding.imgBrightness.setImageResource(R.drawable.ic_brightness_low);
-        } else if(brightnessPercent>0 && brightnessPercent<60){
+        } else if (brightnessPercent > 0 && brightnessPercent < 60) {
             brightnessBinding.imgBrightness.setImageResource(R.drawable.ic_brightness_medium);
-        } else{
+        } else {
             brightnessBinding.imgBrightness.setImageResource(R.drawable.ic_brightness_high);
         }
 
@@ -331,7 +316,7 @@ public class VideoViewActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.mnAddToFavorite:
                                 sqLiteVideo.insertVideo(videoList.get(position));
-                                Toast.makeText(getApplicationContext(), "Added to Favorite", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.mn_add_to_favorite), Toast.LENGTH_SHORT).show();
                         }
                         return false;
                     }
@@ -341,12 +326,12 @@ public class VideoViewActivity extends AppCompatActivity {
 
     }
 
-    private void playVideo(String videoURL) {
-        binding.videoView.setVideoURI(Uri.parse(videoURL));
-        setVideoDuration(videoURL);
+    private void playVideo(Video video) {
+        binding.videoView.setVideoURI(Uri.parse(video.getFile_mp4()));
+        getVideoDuration(video.getFile_mp4());
         binding.videoView.requestFocus();
         binding.videoView.start();
-        setCurrentTime();
+        getCurrentTime();
         showHideVideoController();
         onClickPlayPause();
         onClickNext();
@@ -354,6 +339,7 @@ public class VideoViewActivity extends AppCompatActivity {
         onVideoCompletion();
         setFullScreen();
         onSeekBarChangeListener();
+        onClickFavorite(video);
     }
 
     private void onSeekBarChangeListener() {
@@ -371,7 +357,7 @@ public class VideoViewActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 binding.videoView.seekTo(binding.sbTime.getProgress());
-                setCurrentTime();
+                getCurrentTime();
             }
         });
 
@@ -385,7 +371,7 @@ public class VideoViewActivity extends AppCompatActivity {
                 if (currentVideoPosition < 0) {
                     currentVideoPosition = videoList.size() - 1;
                 }
-                playVideo(videoList.get(currentVideoPosition).getFile_mp4());
+                playVideo(videoList.get(currentVideoPosition));
             }
         });
     }
@@ -398,7 +384,7 @@ public class VideoViewActivity extends AppCompatActivity {
                 if (currentVideoPosition > videoList.size() - 1) {
                     currentVideoPosition = 0;
                 }
-                playVideo(videoList.get(currentVideoPosition).getFile_mp4());
+                playVideo(videoList.get(currentVideoPosition));
             }
         });
     }
@@ -476,13 +462,23 @@ public class VideoViewActivity extends AppCompatActivity {
         binding.iBtnZoom.setImageResource(R.drawable.ic_zoom);
     }
 
-    private void onClickFavorite() {
+    private void onClickFavorite(final Video video) {
         binding.iBtnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (binding.iBtnFavorite.getDrawable() == getResources().getDrawable(R.drawable.ic_favorite_unchecked)) {
+                if (sqLiteVideo == null) {
+                    sqLiteVideo = new SQLiteVideo(getBaseContext());
+                }
+                if (binding.iBtnFavorite.getTag().equals("uncheck")) {
+                    sqLiteVideo.insertVideo(video);
                     binding.iBtnFavorite.setImageResource(R.drawable.ic_favorite_check);
-                    Toast.makeText(VideoViewActivity.this, "Đã thêm vào mục yêu thích", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoViewActivity.this, "Added to favorites", Toast.LENGTH_SHORT).show();
+                    binding.iBtnFavorite.setTag("check");
+                } else {
+                    sqLiteVideo.deleteVideo(video.getId());
+                    binding.iBtnFavorite.setImageResource(R.drawable.ic_favorite_unchecked);
+                    binding.iBtnFavorite.setTag("uncheck");
+                    Toast.makeText(VideoViewActivity.this, "Removed from favorites", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -506,16 +502,7 @@ public class VideoViewActivity extends AppCompatActivity {
         //handler.removeCallbacks(runnable);
     }
 
-    private void hideNotificationBar() {
-        //Hide notification bar in landscape orientation
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-    }
-
-    private void setVideoDuration(String videoURL) {
+    private void getVideoDuration(String videoURL) {
         //Get video duration from URL by using MediaPlayer
         videoDuration = MediaPlayer.create(getBaseContext(), Uri.parse(videoURL)).getDuration(); //in millisecond
         SimpleDateFormat sdf = new SimpleDateFormat("mm:ss");
@@ -525,7 +512,7 @@ public class VideoViewActivity extends AppCompatActivity {
         binding.sbTime.setMax((int) videoDuration);
     }
 
-    private void setCurrentTime() {
+    private void getCurrentTime() {
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -543,7 +530,7 @@ public class VideoViewActivity extends AppCompatActivity {
         }, 100);
     }
 
-    public void onVideoCompletion(){
+    public void onVideoCompletion() {
         binding.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -552,14 +539,14 @@ public class VideoViewActivity extends AppCompatActivity {
                     if (currentVideoPosition > videoList.size() - 1) {
                         currentVideoPosition = 0;
                     }
-                    playVideo(videoList.get(currentVideoPosition).getFile_mp4());
+                    playVideo(videoList.get(currentVideoPosition));
                 } else {
                     binding.videoView.stopPlayback();
                     binding.iBtnReplay.setVisibility(View.VISIBLE);
                     binding.iBtnReplay.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            playVideo(videoList.get(currentVideoPosition).getFile_mp4());
+                            playVideo(videoList.get(currentVideoPosition));
                             binding.iBtnReplay.setVisibility(View.INVISIBLE);
                         }
                     });
@@ -576,16 +563,8 @@ public class VideoViewActivity extends AppCompatActivity {
         screenHeight = size.y;
     }
 
-
     private class MyGesture extends GestureDetector.SimpleOnGestureListener {
-
-        //Press to show controller
-        @Override
-        public void onShowPress(MotionEvent e) {
-
-            super.onShowPress(e);
-        }
-
+        //Tap to show controller
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             showHideVideoController();
@@ -612,13 +591,34 @@ public class VideoViewActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         binding.videoView.pause();
+        beforeStopProgress = binding.videoView.getCurrentPosition();
+        binding.iBtnPlay.setImageResource(R.drawable.ic_play);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        binding.videoView.pause();
+        /*binding.videoView.pause();
+        beforeStopProgress = binding.videoView.getCurrentPosition();
+        binding.iBtnPlay.setImageResource(R.drawable.ic_play);*/
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+       /* binding.videoView.seekTo((int) beforeStopProgress);
+        showHideVideoController();
+        setPortraitScreen();*/
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        binding.videoView.seekTo((int) beforeStopProgress);
+        showHideVideoController();
+        setPortraitScreen();
+    }
+
 
     public Dialog createDialog(View view) {
         Dialog dialog = new Dialog(VideoViewActivity.this);
@@ -632,5 +632,14 @@ public class VideoViewActivity extends AppCompatActivity {
         localLayoutParams.gravity = Gravity.CENTER;
         window.setAttributes(localLayoutParams);
         return dialog;
+    }
+
+    private void hideNotificationBar() {
+        //Hide notification bar in landscape orientation
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
     }
 }

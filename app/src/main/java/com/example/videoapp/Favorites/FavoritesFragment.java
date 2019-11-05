@@ -16,11 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 import com.example.videoapp.HotVideo.Presenter.IVideo;
 import com.example.videoapp.HotVideo.View.Adapter.VideoAdapter;
 import com.example.videoapp.R;
-import com.example.videoapp.SQL.SQLiteVideo;
+import com.example.videoapp.model.sql.SQLiteVideo;
 import com.example.videoapp.VideoView.VideoViewActivity;
 import com.example.videoapp.databinding.FavoritesFragmentBinding;
 

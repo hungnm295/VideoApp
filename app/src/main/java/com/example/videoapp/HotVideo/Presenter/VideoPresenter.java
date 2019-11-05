@@ -4,10 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.videoapp.HotVideo.Model.GetVideoData;
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.GetDataHelper;
+import com.example.videoapp.model.Video;
 import com.example.videoapp.HotVideo.View.HotVideoFragment;
-import com.example.videoapp.SQL.SQLiteVideo;
+import com.example.videoapp.model.sql.SQLiteVideo;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class VideoPresenter implements IVideo.Presenter{
     private IVideo.View view;
     ArrayList<Video> videoList;
-    GetVideoData getVideoData;
     SQLiteVideo sqLiteVideo;
 
     public void attachedViewVideo(HotVideoFragment view) {
@@ -28,7 +27,8 @@ public class VideoPresenter implements IVideo.Presenter{
 
     @Override
     public void fetchDataFromSever(String url) {
-        new getVideoData(url).execute();
+            new getVideoData(url).execute();
+
         /*HttpHelper.getInstance().getRequestAPI().getVideoData().enqueue(new Callback<ArrayList<Video>>() {
             // Đầu tiên lấy Instance của HttpHelper --> getRequestAPI --> call getVideoData
             @Override
@@ -62,21 +62,19 @@ public class VideoPresenter implements IVideo.Presenter{
 
         @Override
         protected void onPreExecute() {
-            view.showProgressBar();
+            view.showProgressBar(true);
             super.onPreExecute();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            getVideoData = new GetVideoData();
-            videoList = getVideoData.getObjectFromJSon(url);
-            //videoList = GetVideoData.getInstance().getObjectFromJSon(url);
+            videoList = GetDataHelper.getInstance().getVideoList(url);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            view.hideProgressBar();
+            view.showProgressBar(false);
             if (view != null) {
                 view.showContent(videoList);
             }

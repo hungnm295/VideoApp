@@ -1,11 +1,9 @@
 package com.example.videoapp.Categories.View;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.videoapp.Categories.Model.Category;
+import com.example.videoapp.model.Category;
 import com.example.videoapp.Categories.Presenter.CategoryPresenter;
 import com.example.videoapp.Categories.Presenter.ICategory;
 import com.example.videoapp.MainActivity;
@@ -52,13 +50,9 @@ public class CategoriesFragment extends Fragment implements ICategory.View{
     }
 
     @Override
-    public void showProgressBar() {
-        binding.pbLoadCategory.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgressBar() {
-        binding.pbLoadCategory.setVisibility(View.INVISIBLE);
+    public void showProgressBar(boolean isLoading) {
+        if(isLoading) binding.pbLoadCategory.setVisibility(View.VISIBLE);
+        else binding.pbLoadCategory.setVisibility(View.INVISIBLE);
     }
 
     @Override

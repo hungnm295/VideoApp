@@ -1,4 +1,4 @@
-package com.example.videoapp.HotVideo.Model;
+package com.example.videoapp.model;
 
 import androidx.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package com.example.videoapp.Categories.Model;
+package com.example.videoapp.model;
 
 public class Category {
     String urlThumb;

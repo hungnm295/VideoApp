@@ -19,10 +19,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.videoapp.Constant;
 import com.example.videoapp.HotVideo.Presenter.IVideo;
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 import com.example.videoapp.HotVideo.View.Adapter.AdvertisementAdapter;
 import com.example.videoapp.HotVideo.View.Adapter.VideoAdapter;
 import com.example.videoapp.HotVideo.Presenter.VideoPresenter;
+import com.example.videoapp.MainActivity;
 import com.example.videoapp.R;
 import com.example.videoapp.VideoView.VideoViewActivity;
 import com.example.videoapp.databinding.HotVideoFragmentBinding;
@@ -40,6 +41,7 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
     AdvertisementAdapter adAdapter;
     List<String> imageList;
     int currentPage =0;
+    boolean isNetworkConnected;
 
     public static HotVideoFragment newInstance() {
         
@@ -54,9 +56,13 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.hot_video_fragment, container, false);
         initPresenter();
-        presenter.fetchDataFromSever(Constant.VIDEO_HOT_API);
+        isNetworkConnected = ((MainActivity)getActivity()).isNetworkConnected();
+        if(isNetworkConnected){
+            presenter.fetchDataFromSever(Constant.VIDEO_HOT_API);
+        }
         return binding.getRoot();
     }
+
 
     @Override
     public void onDestroy() {
@@ -64,14 +70,12 @@ public class HotVideoFragment extends Fragment implements IVideo.View {
         presenter.detachView();
     }
 
-    @Override
-    public void showProgressBar() {
-        binding.pbLoadVideo.setVisibility(View.VISIBLE);
-    }
+
 
     @Override
-    public void hideProgressBar() {
-        binding.pbLoadVideo.setVisibility(View.INVISIBLE);
+    public void showProgressBar(boolean isLoading) {
+        if(isLoading)  binding.pbLoadVideo.setVisibility(View.VISIBLE);
+        else  binding.pbLoadVideo.setVisibility(View.INVISIBLE);
     }
 
     @Override

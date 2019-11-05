@@ -2,8 +2,8 @@ package com.example.videoapp.Favorites;
 
 import android.content.Context;
 
-import com.example.videoapp.HotVideo.Model.Video;
-import com.example.videoapp.SQL.SQLiteVideo;
+import com.example.videoapp.model.Video;
+import com.example.videoapp.model.sql.SQLiteVideo;
 import java.util.ArrayList;
 
 public class FavoritePresenter implements IFavorite.Presenter {

@@ -1,4 +1,4 @@
-package com.example.videoapp.SQL;
+package com.example.videoapp.model.sql;
 
 import android.app.Application;
 import android.content.Context;

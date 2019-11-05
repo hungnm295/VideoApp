@@ -1,6 +1,6 @@
 package com.example.videoapp.Favorites;
 
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 
 import java.util.ArrayList;
 

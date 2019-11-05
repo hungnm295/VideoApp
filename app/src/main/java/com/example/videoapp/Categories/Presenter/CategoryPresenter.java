@@ -2,16 +2,17 @@ package com.example.videoapp.Categories.Presenter;
 
 import android.os.AsyncTask;
 
-import com.example.videoapp.Categories.Model.Category;
-import com.example.videoapp.Categories.Model.GetCategoryData;
+import com.example.videoapp.model.Category;
+import com.example.videoapp.model.GetCategoryData;
 import com.example.videoapp.Categories.View.CategoriesFragment;
 import com.example.videoapp.Constant;
+import com.example.videoapp.model.GetDataHelper;
 
 import java.util.List;
 
 public class CategoryPresenter implements ICategory.Presenter {
     ICategory.View view;
-    com.example.videoapp.Categories.Model.GetCategoryData getCategoryData;
+    GetCategoryData getCategoryData;
     List<Category> categoryList;
 
 
@@ -32,13 +33,13 @@ public class CategoryPresenter implements ICategory.Presenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            view.showProgressBar();
+            view.showProgressBar(true);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             getCategoryData = new GetCategoryData();
-            categoryList = getCategoryData.getCategory(Constant.CATEGORY_API);
+            categoryList = GetDataHelper.getInstance().getCategoryList(Constant.CATEGORY_API);
             //categoryList = com.example.videoapp.Categories.Model.GetData.getInstance().getCategory(Constant.CATEGORY_API);
             return null;
         }
@@ -49,7 +50,8 @@ public class CategoryPresenter implements ICategory.Presenter {
             if (view != null) {
                 view.showCategory(categoryList);
             }
-            view.hideProgressBar();
+            view.showProgressBar(false);
         }
+
     }
 }

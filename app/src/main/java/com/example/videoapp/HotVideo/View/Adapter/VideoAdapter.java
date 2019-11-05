@@ -16,12 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.videoapp.HotVideo.Presenter.IVideo;
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 import com.example.videoapp.R;
 import com.example.videoapp.databinding.ItemVideoBinding;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
     ArrayList<Video> videoList;

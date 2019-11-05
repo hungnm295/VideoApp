@@ -1,4 +1,4 @@
-package com.example.videoapp.Categories.Model;
+package com.example.videoapp.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GetCategoryData {
     private static GetCategoryData INSTANCE;

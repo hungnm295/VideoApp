@@ -1,17 +1,15 @@
-package com.example.videoapp.SQL;
+package com.example.videoapp.model.sql;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
 import com.example.videoapp.Constant;
-import com.example.videoapp.HotVideo.Model.HttpHelper;
-import com.example.videoapp.HotVideo.Model.Video;
+import com.example.videoapp.model.Video;
 
 import java.util.ArrayList;
 
