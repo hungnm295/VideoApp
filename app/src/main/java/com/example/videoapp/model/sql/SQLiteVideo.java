@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.videoapp.Constant;
-import com.example.videoapp.model.Video;
+import com.example.videoapp.utilities.Constant;
+import com.example.videoapp.model.object.Video;
 
 import java.util.ArrayList;
 

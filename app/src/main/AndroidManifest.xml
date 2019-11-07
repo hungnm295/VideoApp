@@ -13,17 +13,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VideoView.VideoViewActivity"
+        <receiver android:name=".model.CheckNetworkBroadcast"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+
+        <activity android:name=".view.VideoViewActivity"
             android:screenOrientation="landscape"
             android:configChanges="screenSize|orientation">
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name=".view.MainActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

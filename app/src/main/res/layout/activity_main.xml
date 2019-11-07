@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".MainActivity">
+        tools:context=".view.MainActivity">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -39,7 +39,7 @@
                     android:textSize="@dimen/_17sdp"
                     android:layout_centerInParent="true"/>
 
-
+<!--
                 <ImageButton
                     android:id="@+id/imgButtonSearch"
                     android:src="@drawable/ic_search"
@@ -59,7 +59,7 @@
                     android:layout_centerVertical="true"
                     app:queryHint="Search Video">
 
-                </androidx.appcompat.widget.SearchView>
+                </androidx.appcompat.widget.SearchView>-->
             </RelativeLayout>
             <!--<androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"

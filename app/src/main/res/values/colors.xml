@@ -6,7 +6,7 @@
     <color name="white">#fff</color>
     <color name="black">#252222</color>
     <color name="orange">#F5AD41</color>
-    <color name="nav_header">#8BAFBAF5</color>
+    <color name="nav_header">#7AA8F8</color>
     <color name="nav_view">#CDFFFFFF</color>
     <color name="video_stroke_color">#F1EEEE</color>
     <color name="bottom_navigation_stroke_color">#F1EEEE</color>
@@ -17,6 +17,6 @@
     <color name="tv_duration_background">#8B1F1C1C</color>
     <color name="tv_date_publish">#747272</color>
     <color name="video_view_background">#34D8CACA</color>
-    <color name="video_list_background">#149C9595</color>
+    <color name="video_list_background">#148D8080</color>
 
 </resources>

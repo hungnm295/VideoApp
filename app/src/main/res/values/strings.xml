@@ -7,7 +7,7 @@
         <item>https://t.a4vn.com/2018/10/1/ra-rap-xem-gi-thang-10-venom-va-a-star-is-born-xuat-quan-hai-phi-911.jpg</item>
 
     </string-array>
-    <string name="app_name">Hot</string>
+    <string name="app_name">Hot Videos</string>
     <string name="mn_hot_videos">Hot Videos</string>
     <string name="mn_categories">Categories</string>
     <string name="mn_favorite">Favorites</string>
@@ -44,7 +44,10 @@
     <string name="error">Error</string>
     <string name="search_video">Search Video</string>
     <string name="play_list">Playlist</string>
+    <string name="up_next">Up next</string>
     <string name="auto_play">Autoplay  </string>
+    <string name="wifi_settings">Wifi settings</string>
+    <string name="cancel">Cancel</string>
 
 
 
