@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="added">Đã thêm vào yêu thích</string>
+    <string name="auto_play">Tự động phát</string>
+    <string name="cancel">Hủy</string>
+    <string name="mn_add_to_favorite">Thêm vào yêu thích</string>
+    <string name="existed">Đã tồn tại</string>
+    <string name="mn_categories" translatable="false">Thể loại</string>
+    <string name="error" translatable="false">Lỗi</string>
+    <string name="mn_favorite">Yêu thích</string>
+    <string name="mn_history">Lịch sử</string>
+    <string name="mn_remove_all">Xóa tất cả</string>
+    <string name="removed_from_list">Đã xóa</string>
+    <string name="removed_all">Đã xóa tất cả</string>
+    <string name="mn_remove">Xóa video này</string>
+    <string name="mn_version">Phiên bản</string>
+    <string name="mn_vote">Bình chọn</string>
+    <string name="mn_vietnamese">Tiếng Việt</string>
+    <string name="mn_term_condition">Điều khoản sử dụng</string>
+    <string name="mn_share">Chia sẻ</string>
+    <string name="mn_send">Gửi</string>
+    <string name="please_check">Vui lòng kiểm tra kết nối Internet</string>
+    <string name="mn_english" translatable="false">Tiếng Anh</string>
+    <string name="no_favorite">Không có video yêu thích</string>
+    <string name="removed" translatable="false">Đã xóa khỏi yêu thích</string>
+    <string name="wifi_settings">Thiết lập  Wifi</string>
+    <string name="mn_communicate">Giao tiếp</string>
+    <string name="mn_language">Ngôn ngữ</string>
+    <string name="mn_mail_us">Mail cho chúng tôi</string>
+</resources>

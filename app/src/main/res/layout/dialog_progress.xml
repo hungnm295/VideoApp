@@ -30,7 +30,7 @@
                     android:id="@+id/tvCurrentTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#fff85959"
+                    android:textColor="#FA3636"
                     android:textSize="14sp" />
 
                 <TextView

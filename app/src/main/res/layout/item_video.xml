@@ -51,11 +51,13 @@
                 </FrameLayout>
         </androidx.cardview.widget.CardView>
         <RelativeLayout
+            android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/card_view_video"
             android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp">
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_centerVertical="true">
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
@@ -74,39 +76,38 @@
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:text="17/10/2019"
                 android:textSize="@dimen/_11sdp"
-                android:textColor="@color/tv_date_publish"/>
-            <ImageView
-            android:id="@+id/imgFavorite"
-            android:src="@drawable/ic_favorite_check"
-            android:layout_below="@id/tvDatePublish"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"/>
-            <TextView
-                android:id="@+id/tvFavoriteNumber"
-                android:layout_below="@id/tvDatePublish"
-                android:layout_toRightOf="@id/imgFavorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:text="20"/>
-            <ImageView
-                android:id="@+id/imgComment"
-                android:src="@drawable/ic_comment_black_24dp"
-                android:layout_below="@id/tvDatePublish"
-                android:layout_toRightOf="@id/tvFavoriteNumber"
-                android:layout_width="@dimen/_15sdp"
-                android:layout_height="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_1sdp"
-                android:layout_marginLeft="@dimen/_10sdp"/>
-            <TextView
-                android:id="@+id/tvLikeNumber"
-                android:layout_below="@id/tvDatePublish"
-                android:layout_toRightOf="@id/imgComment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:text="30"/>
-
+               android:textColor="@color/tv_date_publish"/>
+            <!--   <ImageView
+                  android:id="@+id/imgFavorite"
+                  android:layout_width="@dimen/_15sdp"
+                  android:layout_height="@dimen/_15sdp"
+                  android:layout_below="@id/tvDatePublish"
+                  android:src="@drawable/ic_favorite_check" />
+              <TextView
+                  android:id="@+id/tvFavoriteNumber"
+                  android:layout_below="@id/tvDatePublish"
+                  android:layout_toRightOf="@id/imgFavorite"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/_5sdp"
+                  android:text="20"/>
+              <ImageView
+                  android:id="@+id/imgComment"
+                  android:src="@drawable/ic_comment_black_24dp"
+                  android:layout_below="@id/tvDatePublish"
+                  android:layout_toRightOf="@id/tvFavoriteNumber"
+                  android:layout_width="@dimen/_15sdp"
+                  android:layout_height="@dimen/_15sdp"
+                  android:layout_marginTop="@dimen/_1sdp"
+                  android:layout_marginLeft="@dimen/_10sdp"/>
+              <TextView
+                  android:id="@+id/tvLikeNumber"
+                  android:layout_below="@id/tvDatePublish"
+                  android:layout_toRightOf="@id/imgComment"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/_5sdp"
+                  android:text="30"/>-->
 
             <ImageButton
                 android:id="@+id/imgButtonMore"
@@ -117,6 +118,16 @@
                 android:layout_marginRight="@dimen/_5sdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+            <RatingBar
+                android:layout_below="@id/tvDatePublish"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="?android:attr/ratingBarStyleIndicator"
+                android:rating="5"
+                android:progressTint="@color/orange"
+                android:progressBackgroundTint="@color/orange"
+                android:secondaryProgressTint="@color/orange" />
         </RelativeLayout>
     </RelativeLayout>
 

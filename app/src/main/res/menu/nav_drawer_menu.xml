@@ -9,14 +9,14 @@
             android:id="@+id/mn_term_condition"
             android:icon="@drawable/ic_term"
             android:title="@string/mn_term_condition" />
-        <item
+       <!-- <item
             android:id="@+id/mn_vote"
             android:icon="@drawable/ic_vote"
             android:title="@string/mn_vote" />
         <item
             android:id="@+id/mn_mail_us"
             android:icon="@drawable/ic_mail"
-            android:title="@string/mn_mail_us" />
+            android:title="@string/mn_mail_us" />-->
         <item
             android:id="@+id/mn_history"
             android:icon="@drawable/ic_history"

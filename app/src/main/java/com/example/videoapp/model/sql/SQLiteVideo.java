@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.videoapp.utilities.Constant;
+import com.example.videoapp.util.Constant;
 import com.example.videoapp.model.object.Video;
 
 import java.util.ArrayList;
@@ -83,6 +83,16 @@ public class SQLiteVideo extends SQLiteOpenHelper {
         database = getWritableDatabase();
         database.delete(Constant.DB_TABLE_NAME, null, null);
         return true;
+    }
+
+    public boolean ifExists(Video video) {
+        database = getReadableDatabase();
+        Cursor cursor;
+        String checkQuery = "SELECT idVideo FROM " + Constant.DB_TABLE_NAME + " WHERE idVideo=" + video.getId();
+        cursor = database.rawQuery(checkQuery, null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
     }
 
     private void closeDB() {

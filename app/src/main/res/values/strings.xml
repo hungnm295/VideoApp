@@ -1,14 +1,6 @@
 <resources>
-    <string-array name="image_slideshow">
-        <item>http://kenh14cdn.com/crop/640_360/2019/10/9/landscape-avatar-copy-6-1570614937635744009919-crop-15706149434091020368811.png</item>
-        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/abominable-animated-movie-15706828763581316248349.jpg</item>
-        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/gemini-man-poster-15706797402101057862233.jpg</item>
-        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/l0-15706833853682137973483.jpg</item>
-        <item>https://t.a4vn.com/2018/10/1/ra-rap-xem-gi-thang-10-venom-va-a-star-is-born-xuat-quan-hai-phi-911.jpg</item>
-
-    </string-array>
-    <string name="app_name">Hot Videos</string>
-    <string name="mn_hot_videos">Hot Videos</string>
+    <string name="app_name" translatable="false">Hot Video</string>
+    <string name="mn_hot_videos" translatable="false">Hot Video</string>
     <string name="mn_categories">Categories</string>
     <string name="mn_favorite">Favorites</string>
     <string name="mn_add_to_favorite">Add to favorites</string>
@@ -23,32 +15,48 @@
     <string name="mn_language">Language</string>
     <string name="mn_vietnamese">Vietnamese</string>
     <string name="mn_english">English</string>
-    <string name="mn_remove">Remove from list</string>
+    <string name="mn_remove">Remove this video</string>
     <string name="mn_remove_all">Remove All</string>
-    <string name="open">Open Navigation Drawer</string>
-    <string name="close">Close Navigation Drawer</string>
-    <string name="json_thumb">thumb</string>
-    <string name="json_id">id</string>
-    <string name="json_title">title</string>
-    <string name="json_avatar">avatar</string>
-    <string name="json_file_mp4">file_mp4</string>
-    <string name="json_date_published">date_published</string>
-    <string name="json_duration">duration</string>
-    <string name="id_video">idVideo</string>
-    <string name="video_url">videoURL</string>
-    <string name="avatar_url">avatarURL</string>
-    <string name="current_video_position">CurrentVideoPosition</string>
-    <string name="video_list">VideoList</string>
-    <string name="removed_from_list">Removed from list</string>
+    <string name="open" translatable="false">Open Navigation Drawer</string>
+    <string name="close" translatable="false">Close Navigation Drawer</string>
+    <string name="json_thumb" translatable="false">thumb</string>
+    <string name="json_id" translatable="false">id</string>
+    <string name="json_title" translatable="false">title</string>
+    <string name="json_avatar" translatable="false">avatar</string>
+    <string name="json_file_mp4" translatable="false">file_mp4</string>
+    <string name="json_date_published" translatable="false">date_published</string>
+    <string name="json_duration" translatable="false">duration</string>
+    <string name="id_video" translatable="false">idVideo</string>
+    <string name="video_url" translatable="false">videoURL</string>
+    <string name="avatar_url" translatable="false">avatarURL</string>
+    <string name="current_video_position" translatable="false">CurrentVideoPosition</string>
+    <string name="video_list" translatable="false">VideoList</string>
+    <string name="removed_from_list">Removed</string>
     <string name="removed_all">Removed All</string>
     <string name="error">Error</string>
-    <string name="search_video">Search Video</string>
-    <string name="play_list">Playlist</string>
-    <string name="up_next">Up next</string>
-    <string name="auto_play">Autoplay  </string>
+    <string name="search_video" translatable="false">Search Video</string>
+    <string name="play_list" translatable="false">Playlist</string>
+    <string name="up_next">Playlist</string>
+    <string name="auto_play" translatable="false">Autoplay  </string>
+    <string name="please_check">Please check your internet connection and try again</string>
     <string name="wifi_settings">Wifi settings</string>
     <string name="cancel">Cancel</string>
+    <string name="added">Added to favorite</string>
+    <string name="existed">Already existed</string>
+    <string name="removed">Removed from favorite</string>
+    <string name="no_favorite">No favorite video</string>
+    <string name="check" translatable="false">check</string>
+    <string name="uncheck" translatable="false">uncheck</string>
 
+
+    <string-array name="image_slideshow">
+        <item>http://kenh14cdn.com/crop/640_360/2019/10/9/landscape-avatar-copy-6-1570614937635744009919-crop-15706149434091020368811.png</item>
+        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/abominable-animated-movie-15706828763581316248349.jpg</item>
+        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/gemini-man-poster-15706797402101057862233.jpg</item>
+        <item>https://kenh14cdn.com/thumb_w/620/2019/10/10/l0-15706833853682137973483.jpg</item>
+        <item>https://t.a4vn.com/2018/10/1/ra-rap-xem-gi-thang-10-venom-va-a-star-is-born-xuat-quan-hai-phi-911.jpg</item>
+
+    </string-array>
 
 
 </resources>
